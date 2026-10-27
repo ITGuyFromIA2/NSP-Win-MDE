@@ -1,0 +1,26 @@
+# Secrets - never commit
+*.sec
+/Secrets/
+secrets*.psd1
+Conf.*.ps1
+!Conf.*.sample.ps1
+*.local.ps1
+*ApiKey*
+*_Pass.txt
+*_Seed.txt
+*.pfx
+*.pem
+
+# Test / build output
+TestResults*.xml
+coverage*.xml
+/.pester/
+
+# Field material that names clients (server names, case numbers) - kept locally, never committed.
+# docs\Design.md carries the same findings with the client details removed.
+/docs/*.zip
+/docs/NSP-SharingViolation-Tooling/
+/docs/HANDOFF-*.md
+
+# Captures
+*.pml
