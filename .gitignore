@@ -21,6 +21,8 @@ coverage*.xml
 /docs/*.zip
 /docs/NSP-SharingViolation-Tooling/
 /docs/HANDOFF-*.md
+# Customer, site and person names checked by tools\Test-Repo.ps1 (naming them here would publish them).
+/tools/PrivateTerms.local.txt
 
 # Captures
 *.pml

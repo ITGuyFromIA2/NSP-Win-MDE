@@ -44,6 +44,24 @@ if ($analysis) {
     if ($analysis | Where-Object Severity -in 'Error', 'Warning') { $failed = $true }
 } else { Write-Host 'clean' -ForegroundColor Green }
 
+Write-Host "`n=== Private references ===" -ForegroundColor Cyan
+# Customer, site, and person names can't be listed here without publishing them. Keep them one
+# per line in tools\PrivateTerms.local.txt (git-ignored); every term is checked as a whole word in
+# tracked files. Only terms are checked: tests use \\APP01\ UNC paths on purpose.
+$termsFile = Join-Path $PSScriptRoot 'PrivateTerms.local.txt'
+if (Test-Path -LiteralPath $termsFile) {
+    $terms = @(Get-Content -LiteralPath $termsFile | ForEach-Object { $_.Trim() } | Where-Object { $_ -and -not $_.StartsWith('#') })
+    $pattern = '(?i)\b(' + (($terms | ForEach-Object { [regex]::Escape($_) }) -join '|') + ')\b'
+    $tracked = @(git -C $repoRoot ls-files | Where-Object { $_ -notlike '*.pmc' } | ForEach-Object { Join-Path $repoRoot $_ })
+    $hits = @(Select-String -LiteralPath $tracked -Pattern $pattern)
+    if ($hits.Count) {
+        $hits | ForEach-Object { Write-Host "$($_.Path):$($_.LineNumber)" -ForegroundColor Red }
+        $failed = $true
+    } else { Write-Host "clean ($($terms.Count) term(s), $($tracked.Count) file(s))" -ForegroundColor Green }
+} else {
+    Write-Warning 'tools\PrivateTerms.local.txt not found; customer and person names are not being checked.'
+}
+
 foreach ($exe in 'powershell.exe', 'pwsh.exe') {
     Write-Host "`n=== Pester () ===" -ForegroundColor Cyan
     & $exe -NoProfile -ExecutionPolicy Bypass -File $PSCommandPath -CurrentEditionOnly
