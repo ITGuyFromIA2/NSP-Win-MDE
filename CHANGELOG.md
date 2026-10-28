@@ -3,7 +3,7 @@
 All notable changes to NSP.Win.MDE are documented here. Versions follow
 [SemVer](https://semver.org/). `0.x` until it has real use outside NSP.
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-10-28)
 
 First release: the MsSense sharing-violation evidence tooling as a module.
 
